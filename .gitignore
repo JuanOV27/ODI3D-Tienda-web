@@ -1,0 +1,16 @@
+# Este repo (ODI3D-Tienda-web) versiona SOLO los módulos de la tienda:
+#   - tienda3d            (backend Laravel)
+#   - tienda3d-frontend   (frontend Vue 3 + Vite)
+#
+# gestion3d tiene su propio repositorio independiente
+# (https://github.com/JuanOV27/ODI3D-Software-de-Cotizacion) y NO debe
+# subirse desde aquí.
+/gestion3d/
+
+# Configuración local de Claude Code / herramientas del entorno
+/.claude/
+
+# Documentación de bitácora del sistema integral (vive a nivel de ODI3D/
+# y describe los tres módulos; no es parte del código de la tienda)
+/CLAUDE.md
+/PROGRESO.md

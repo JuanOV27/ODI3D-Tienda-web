@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-odi-negro text-odi-texto font-sans antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-odi-amarillo text-odi-negro font-semibold px-5 py-2.5 rounded-lg
+           transition-all duration-200 ease-out
+           hover:brightness-110 active:scale-95;
+  }
+  .btn-ghost {
+    @apply border border-odi-gris2 text-odi-texto px-5 py-2.5 rounded-lg
+           transition-all duration-200 ease-out
+           hover:border-odi-amarillo hover:text-odi-amarillo active:scale-95;
+  }
+  .card {
+    @apply bg-odi-gris rounded-2xl p-5 transition-all duration-200 ease-out;
+  }
+  .input-field {
+    @apply w-full bg-odi-gris2 border border-odi-gris2 text-odi-texto rounded-lg px-4 py-3
+           placeholder-odi-muted focus:outline-none focus:border-odi-amarillo
+           transition-colors duration-200;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+}
