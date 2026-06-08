@@ -60,6 +60,9 @@ onMounted(async () => {
         <div class="min-w-0">
           <p class="text-sm font-medium text-odi-texto truncate">{{ s.descripcion }}</p>
           <p class="text-xs text-odi-muted mt-0.5">{{ new Date(s.fecha_solicitud).toLocaleDateString('es-CO') }}</p>
+          <p v-if="s.fecha_estimada_entrega" class="text-xs text-odi-amarillo mt-0.5">
+            📅 Entrega estimada: {{ new Date(s.fecha_estimada_entrega).toLocaleDateString('es-CO', { timeZone: 'UTC' }) }}
+          </p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
           <span v-if="s.precio_final" class="text-odi-amarillo font-bold text-sm">

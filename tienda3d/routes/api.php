@@ -7,6 +7,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ModuloController;
+use App\Http\Controllers\PagoSolicitudController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,8 +46,26 @@ Route::middleware(['modulo:catalogo', 'auth:sanctum'])->group(function () {
 Route::middleware(['modulo:solicitudes', 'auth:sanctum'])->group(function () {
     Route::post('/solicitudes', [SolicitudController::class, 'store']);
     Route::get('/solicitudes', [SolicitudController::class, 'misSolicitudes']);
+    Route::get('/solicitudes/{id}', [SolicitudController::class, 'show']);
+    Route::put('/solicitudes/{id}', [SolicitudController::class, 'update']);
     Route::get('/solicitudes/{id}/estado', [SolicitudController::class, 'estado']);
     Route::get('/solicitudes/{solicitudId}/archivos/{archivoId}', [SolicitudController::class, 'descargarArchivo']);
+    Route::delete('/solicitudes/{id}/archivos/{archivoId}', [SolicitudController::class, 'eliminarArchivo']);
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Rutas INTERNAS — usadas únicamente por gestion3d vía proxy server-to-server.
+// Sin Sanctum (mismo modelo de confianza que las escrituras directas a BD de
+// gestion3d), protegidas solo por modulo:solicitudes para verificar que el
+// módulo está activo.
+// ─────────────────────────────────────────────────────────────────────────────
+Route::prefix('interno')->middleware('modulo:solicitudes')->group(function () {
+    Route::get('/solicitudes/{id}/pagos',
+        [PagoSolicitudController::class, 'index']);
+    Route::post('/solicitudes/{id}/pagos',
+        [PagoSolicitudController::class, 'store']);
+    Route::get('/solicitudes/{solicitudId}/pagos/{pagoId}/comprobante',
+        [PagoSolicitudController::class, 'descargarComprobante']);
 });
 
 // Chat — requiere auth + módulo solicitudes activo

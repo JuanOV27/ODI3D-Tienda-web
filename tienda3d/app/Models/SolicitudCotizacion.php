@@ -17,12 +17,14 @@ class SolicitudCotizacion extends Model
         'id', 'cliente_id', 'descripcion', 'material_preferido', 'cantidad',
         'uso_final', 'estado', 'precio_final', 'notas_internas',
         'cotizacion_id', 'asignado_a', 'fecha_solicitud', 'fecha_respuesta',
+        'fecha_estimada_entrega',
     ];
 
     protected $casts = [
-        'precio_final'    => 'float',
-        'fecha_solicitud' => 'datetime',
-        'fecha_respuesta' => 'datetime',
+        'precio_final'           => 'float',
+        'fecha_solicitud'        => 'datetime',
+        'fecha_respuesta'        => 'datetime',
+        'fecha_estimada_entrega' => 'date',
     ];
 
     public function cliente()

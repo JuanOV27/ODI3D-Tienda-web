@@ -14,9 +14,30 @@ async function cerrarSesion() {
   auth.logout()
   router.push('/login')
 }
+
+function volverAGestion() {
+  const destino = auth.empleado?.backUrl || 'http://localhost/ODI3D/gestion3d/index.html'
+  auth.clearEmpleadoMode()
+  window.location.href = destino
+}
 </script>
 
 <template>
+  <!-- Banner de vista interna — visible solo cuando un empleado/admin visita la tienda desde gestion3d -->
+  <div v-if="auth.enModoEmpleado"
+    class="w-full bg-amber-400/10 border-b border-amber-400/30 text-amber-300 text-xs py-2 px-4 flex items-center justify-between gap-4">
+    <span>
+      <span class="font-semibold">Vista interna</span>
+      — Estás navegando como <strong>{{ auth.empleado?.nombre }}</strong>
+      ({{ auth.empleado?.rol === 'admin' ? 'Administrador' : 'Empleado' }}).
+      Los clientes no ven este aviso.
+    </span>
+    <button @click="volverAGestion"
+      class="shrink-0 flex items-center gap-1.5 bg-amber-400/20 hover:bg-amber-400/30 text-amber-200 border border-amber-400/40 rounded px-3 py-1 font-medium transition-colors duration-200">
+      ← Volver a Gestión
+    </button>
+  </div>
+
   <nav class="sticky top-0 z-50 border-b border-odi-gris2 bg-odi-negro/90 backdrop-blur-md">
     <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-6">
 

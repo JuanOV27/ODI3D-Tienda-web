@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/lib/api'
 import MantenimientoBanner from '@/components/MantenimientoBanner.vue'
+import VisorArchivo from '@/components/VisorArchivo.vue'
 import { useModulo } from '@/composables/useModulo'
 
 const { activo, mensaje, loading: loadingModulo } = useModulo('solicitudes')
@@ -106,11 +107,7 @@ async function enviar() {
             class="hidden" @change="onFileInput" />
         </div>
         <div v-if="archivos.length" class="mt-3 flex flex-col gap-1.5">
-          <div v-for="(f, i) in archivos" :key="i"
-            class="flex items-center justify-between bg-odi-gris2 rounded-lg px-3 py-2 text-sm">
-            <span class="text-odi-texto truncate">{{ f.name }}</span>
-            <button type="button" @click="quitarArchivo(i)" class="text-odi-muted hover:text-red-400 ml-3 transition-colors">✕</button>
-          </div>
+          <VisorArchivo v-for="(f, i) in archivos" :key="i" :archivo="f" eliminable @eliminar="quitarArchivo(i)" />
         </div>
       </div>
 
