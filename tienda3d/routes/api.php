@@ -8,6 +8,7 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\PagoSolicitudController;
+use App\Http\Controllers\SolicitudManualController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,12 +61,23 @@ Route::middleware(['modulo:solicitudes', 'auth:sanctum'])->group(function () {
 // módulo está activo.
 // ─────────────────────────────────────────────────────────────────────────────
 Route::prefix('interno')->middleware('modulo:solicitudes')->group(function () {
+    // Pagos
     Route::get('/solicitudes/{id}/pagos',
         [PagoSolicitudController::class, 'index']);
     Route::post('/solicitudes/{id}/pagos',
         [PagoSolicitudController::class, 'store']);
     Route::get('/solicitudes/{solicitudId}/pagos/{pagoId}/comprobante',
         [PagoSolicitudController::class, 'descargarComprobante']);
+
+    // Solicitudes manuales (creación desde el panel de gestion3d)
+    Route::post('/solicitudes',
+        [SolicitudManualController::class, 'store']);
+    Route::post('/solicitudes/{id}/items',
+        [SolicitudManualController::class, 'storeItems']);
+    Route::get('/solicitudes/{id}/items',
+        [SolicitudManualController::class, 'indexItems']);
+    Route::post('/solicitudes/{id}/vincular-cliente',
+        [SolicitudManualController::class, 'vincularCliente']);
 });
 
 // Chat — requiere auth + módulo solicitudes activo

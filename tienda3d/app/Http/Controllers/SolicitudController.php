@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SolicitudCotizacion;
 use App\Models\SolicitudArchivo;
+use App\Models\SolicitudItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -28,17 +29,29 @@ class SolicitudController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'descripcion'        => 'required|string|max:2000',
+            'descripcion'        => 'nullable|string|max:2000',
             'material_preferido' => 'nullable|string|max:100',
             'cantidad'           => 'nullable|integer|min:1',
             'uso_final'          => 'nullable|string|max:500',
             'archivos.*'         => ['nullable', 'file', 'max:20480', $this->reglaExtensionArchivo()],
+            // Multi-ítem: lista de artículos a cotizar
+            'items'                     => 'nullable|array',
+            'items.*.descripcion'       => 'required_with:items|string|max:2000',
+            'items.*.material'          => 'nullable|string|max:100',
+            'items.*.cantidad'          => 'nullable|integer|min:1',
+            'items.*.descripcion_extra' => 'nullable|string|max:500',
         ]);
+
+        // Si hay ítems múltiples, la descripción principal es un resumen
+        $descripcionPrincipal = $data['descripcion']
+            ?? (isset($data['items'][0]) ? $data['items'][0]['descripcion'] : 'Solicitud multi-ítem');
 
         $solicitud = SolicitudCotizacion::create([
             'id'                 => time() . '_' . substr(md5(uniqid(rand(), true)), 0, 9),
             'cliente_id'         => $request->user()->id,
-            'descripcion'        => $data['descripcion'],
+            'origen'             => 'cliente',
+            'tipo_solicitud'     => !empty($data['items']) ? 'cotizacion' : 'cotizacion',
+            'descripcion'        => $descripcionPrincipal,
             'material_preferido' => $data['material_preferido'] ?? null,
             'cantidad'           => $data['cantidad'] ?? 1,
             'uso_final'          => $data['uso_final'] ?? null,
@@ -59,6 +72,22 @@ class SolicitudController extends Controller
                     'nombre_servidor' => $ruta,
                     'tipo_mime'       => $archivo->getMimeType(),
                     'tamano_bytes'    => $archivo->getSize(),
+                ]);
+            }
+        }
+
+        // Guardar ítems múltiples si vienen
+        if (!empty($data['items'])) {
+            foreach ($data['items'] as $itemData) {
+                SolicitudItem::create([
+                    'id'             => time() . '_' . substr(md5(uniqid(rand(), true)), 0, 9),
+                    'solicitud_id'   => $solicitud->id,
+                    'tipo_item'      => 'personalizado',
+                    'producto_nombre'=> $itemData['descripcion'],
+                    'cantidad'       => $itemData['cantidad'] ?? 1,
+                    'material'       => $itemData['material'] ?? null,
+                    'descripcion_extra' => $itemData['descripcion_extra'] ?? null,
+                    'created_at'     => now(),
                 ]);
             }
         }

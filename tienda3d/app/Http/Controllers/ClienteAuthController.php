@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\SolicitudCotizacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
@@ -38,6 +39,20 @@ class ClienteAuthController extends Controller
         ]);
 
         $token = $cliente->createToken('cliente-token')->plainTextToken;
+
+        // ── Vincular solicitudes manuales con el mismo teléfono ─────────────
+        // Si el empleado registró manualmente una solicitud de un cliente que
+        // luego crea su cuenta, detectamos la coincidencia por teléfono y
+        // marcamos esas solicitudes para que el empleado las confirme.
+        if (!empty($data['telefono'])) {
+            SolicitudCotizacion::where('origen', 'manual')
+                ->where('cliente_telefono', $data['telefono'])
+                ->whereNull('cliente_id')
+                ->update([
+                    'cliente_id'            => $cliente->id,
+                    'vinculacion_pendiente' => true,
+                ]);
+        }
 
         return response()->json([
             'success' => true,
