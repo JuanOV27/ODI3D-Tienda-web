@@ -42,8 +42,9 @@ function volverAGestion() {
     <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-6">
 
       <!-- Logo -->
-      <RouterLink to="/" class="font-display font-bold text-xl tracking-tight text-odi-amarillo hover:opacity-80 transition-opacity duration-200">
-        ODI<span class="text-odi-texto">3D</span>
+      <RouterLink to="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity duration-200" aria-label="ODI3D Tienda — Inicio">
+        <img src="/favicon.svg" alt="ODI3D" class="h-8 w-8 invert" />
+        <span class="font-display font-bold text-xl tracking-tight text-odi-amarillo">ODI<span class="text-odi-texto">3D</span></span>
       </RouterLink>
 
       <!-- Links centro -->
